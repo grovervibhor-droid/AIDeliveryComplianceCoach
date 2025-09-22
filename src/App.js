@@ -69,9 +69,13 @@ function App() {
   return (
     <div className="App" style={{background: '#f4f6fa', minHeight: '100vh', fontFamily: 'Segoe UI, Arial, sans-serif'}}>
       {/* Hero Section */}
-      <div style={{width: '100%', background: 'linear-gradient(90deg, #1a237e 60%, #3949ab 100%)', color: '#fff', padding: '2rem 0 1.2rem 0', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.07)'}}>
-        <h1 style={{margin: 0, fontWeight: 700, fontSize: '2.2rem'}}>Compliance Coach</h1>
-        <p style={{margin: '1rem 0 0 0', fontSize: '1.3rem', fontWeight: 500, letterSpacing: '0.02em', color: '#fff', textShadow: '0 2px 8px rgba(26,35,126,0.15)'}}>AI-driven compliance assistant for regulated industries</p>
+      <div style={{width: '100%', background: 'linear-gradient(90deg, #1a237e 60%, #3949ab 100%)', color: '#fff', padding: '2rem 0 1.2rem 0', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', position: 'relative'}}>
+        {/* Azure AI Foundry branding */}
+        <div style={{position: 'absolute', top: '1rem', right: '2rem', fontSize: '0.9rem', fontWeight: 400, color: '#e8eaf6', opacity: 0.9}}>
+          Powered by Azure AI Foundry
+        </div>
+        <h1 style={{margin: 0, fontWeight: 700, fontSize: '2.2rem'}}>AI-Delivery Compliance Coach</h1>
+        <p style={{margin: '1rem 0 0 0', fontSize: '1.3rem', fontWeight: 500, letterSpacing: '0.02em', color: '#fff', textShadow: '0 2px 8px rgba(26,35,126,0.15)'}}>Transforming project delivery with Artificial Intelligence</p>
       </div>
       {/* Main Card Section */}
       <main style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - 180px)'}}>
@@ -136,33 +140,34 @@ function App() {
                 }
               }}
             >
-              Get Recommendations
+              Submit
             </button>
           </div>
-          {/* Recommendations */}
-          <section>
-            <h2 style={{fontSize: '1.15rem', marginBottom: '1.2rem', color: '#1a237e'}}>Recommendations</h2>
-            {scanning ? (
-              <div style={{textAlign: 'center', minHeight: '40vh', fontSize: '1.2rem', color: '#0078d4', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                <div style={{marginBottom: '1.5rem'}}>Scanning in progress...</div>
-                <div style={{width: '60%', height: '8px', background: '#e3e3e3', borderRadius: '4px', overflow: 'hidden'}}>
-                  <div style={{width: '100%', height: '100%', background: 'linear-gradient(90deg, #1a237e 0%, #3949ab 100%)', animation: 'progressBar 1.2s linear infinite'}}></div>
+          
+          {/* Recommendations - Only show when scanning or has results */}
+          {(scanning || recommendations.length > 0) && (
+            <section>
+              <h2 style={{fontSize: '1.15rem', marginBottom: '1.2rem', color: '#1a237e'}}>Recommendations</h2>
+              {scanning ? (
+                <div style={{textAlign: 'center', minHeight: '40vh', fontSize: '1.2rem', color: '#0078d4', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                  <div style={{marginBottom: '1.5rem'}}>Scanning in progress...</div>
+                  <div style={{width: '60%', height: '8px', background: '#e3e3e3', borderRadius: '4px', overflow: 'hidden'}}>
+                    <div style={{width: '100%', height: '100%', background: 'linear-gradient(90deg, #1a237e 0%, #3949ab 100%)', animation: 'progressBar 1.2s linear infinite'}}></div>
+                  </div>
+                  <style>{`
+                    @keyframes progressBar {
+                      0% { transform: translateX(-100%); }
+                      100% { transform: translateX(100%); }
+                    }
+                  `}</style>
                 </div>
-                <style>{`
-                  @keyframes progressBar {
-                    0% { transform: translateX(-100%); }
-                    100% { transform: translateX(100%); }
-                  }
-                `}</style>
-              </div>
-            ) : recommendations.length > 0 ? (
-              <div style={{background: '#f9f9f9', borderRadius: '12px', padding: '2rem', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', textAlign: 'left'}}>
-                <ReactMarkdown>{recommendations[0]}</ReactMarkdown>
-              </div>
-            ) : (
-              <p style={{color: '#888'}}>No recommendations yet. Select industry and region, then upload a document to begin analysis.</p>
-            )}
-          </section>
+              ) : recommendations.length > 0 ? (
+                <div style={{background: '#f9f9f9', borderRadius: '12px', padding: '2rem', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', textAlign: 'left'}}>
+                  <ReactMarkdown>{recommendations[0]}</ReactMarkdown>
+                </div>
+              ) : null}
+            </section>
+          )}
         </div>
       </main>
     </div>
