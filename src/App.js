@@ -10,55 +10,59 @@ function App() {
   const [recommendations, setRecommendations] = useState([]);
   const [scanning, setScanning] = useState(false);
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
     setFile(uploadedFile);
     setRecommendations([]);
-    if (industry && region && uploadedFile) {
-      setScanning(true);
-      if (uploadedFile.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-        // DOCX file
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-          const arrayBuffer = event.target.result;
-          const { value: fileContent } = await mammoth.extractRawText({ arrayBuffer });
-          try {
-            const response = await fetch('http://localhost:5000/api/recommendations', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ industry, region, fileContent }),
-            });
-            const data = await response.json();
-            setRecommendations([data.recommendations]);
-          } catch (error) {
-            setRecommendations(['Error fetching recommendations.']);
-          }
-          setScanning(false);
-        };
-        reader.readAsArrayBuffer(uploadedFile);
-      } else {
-        // TXT or other text file
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-          const fileContent = event.target.result;
-          try {
-            const response = await fetch('http://localhost:5000/api/recommendations', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ industry, region, fileContent }),
-            });
-            const data = await response.json();
-            setRecommendations([data.recommendations]);
-          } catch (error) {
-            setRecommendations(['Error fetching recommendations.']);
-          }
-          setScanning(false);
-        };
-        reader.readAsText(uploadedFile);
-      }
+  };
+
+  const handleSubmit = async () => {
+    if (!industry || !region || !file) {
+      return;
+    }
+
+    setScanning(true);
+    setRecommendations([]);
+
+    if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+      // DOCX file
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const arrayBuffer = event.target.result;
+        const { value: fileContent } = await mammoth.extractRawText({ arrayBuffer });
+        try {
+          const response = await fetch('http://localhost:5000/api/recommendations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ industry, region, fileContent }),
+          });
+          const data = await response.json();
+          setRecommendations([data.recommendations]);
+        } catch (error) {
+          setRecommendations(['Error fetching recommendations.']);
+        }
+        setScanning(false);
+      };
+      reader.readAsArrayBuffer(file);
     } else {
-      setScanning(false);
-      setRecommendations([]);
+      // TXT or other text file
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const fileContent = event.target.result;
+        try {
+          const response = await fetch('http://localhost:5000/api/recommendations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ industry, region, fileContent }),
+          });
+          const data = await response.json();
+          setRecommendations([data.recommendations]);
+        } catch (error) {
+          setRecommendations(['Error fetching recommendations.']);
+        }
+        setScanning(false);
+      };
+      reader.readAsText(file);
     }
   };
 
@@ -100,6 +104,40 @@ function App() {
             <h2 style={{fontSize: '1.15rem', marginBottom: '1.2rem', color: '#1a237e'}}>Upload Project Document</h2>
             <input type="file" onChange={handleFileChange} style={{padding: '0.5rem', borderRadius: '8px', border: '1px solid #c5cae9', width: '100%'}} />
             {file && <div style={{marginTop: '0.5rem', fontSize: '0.95rem', color: '#333'}}>Selected: {file.name}</div>}
+          </div>
+          
+          {/* Submit Button */}
+          <div style={{marginBottom: '2rem', textAlign: 'center'}}>
+            <button 
+              onClick={handleSubmit}
+              disabled={!industry || !region || !file}
+              style={{
+                background: (!industry || !region || !file) ? '#ccc' : 'linear-gradient(90deg, #1a237e 0%, #3949ab 100%)',
+                color: '#fff',
+                border: 'none',
+                padding: '0.75rem 2rem',
+                borderRadius: '8px',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                cursor: (!industry || !region || !file) ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: (!industry || !region || !file) ? 'none' : '0 2px 8px rgba(26, 35, 126, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                if (industry && region && file) {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(26, 35, 126, 0.4)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (industry && region && file) {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 2px 8px rgba(26, 35, 126, 0.3)';
+                }
+              }}
+            >
+              Get Recommendations
+            </button>
           </div>
           {/* Recommendations */}
           <section>
