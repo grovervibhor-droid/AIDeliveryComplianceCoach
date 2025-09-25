@@ -7,6 +7,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Health check endpoint for monitoring
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    service: 'AI Delivery Compliance Coach',
+    checks: {
+      database: 'not applicable',
+      azure_openai: apiKey ? 'configured' : 'missing key'
+    }
+  });
+});
+
 // Updated to use environment variable for API key
 const endpoint = 'https://ameya-3557-resource.cognitiveservices.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2023-03-15-preview';
 const apiKey = process.env.AZURE_OPENAI_KEY;
