@@ -1,5 +1,4 @@
 jobs:
-
 name: Azure Web App Deploy
 
 on:
