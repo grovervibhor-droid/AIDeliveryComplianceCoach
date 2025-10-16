@@ -1,3 +1,4 @@
+jobs:
 name: Azure Web App Deploy
 
 on:
@@ -5,7 +6,7 @@ on:
     branches:
       - main
 
-jobs:
+
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
