@@ -1,0 +1,2 @@
+{"level":"error","message":"AZURE_OPENAI_KEY is not configured","service":"compliance-coach-backend","timestamp":"2025-10-16T08:54:01.217Z"}
+{"apiKeyConfigured":false,"level":"info","message":"Server running on port 5000","nodeEnv":"development","service":"compliance-coach-backend","timestamp":"2025-10-16T08:54:01.225Z"}
